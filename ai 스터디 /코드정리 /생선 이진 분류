@@ -1,3 +1,5 @@
+*도미 데이터
+이 두 가지는 도미의 특성이다.
 bream_length =
 —생선의 길이—
 
@@ -11,4 +13,98 @@ bream_weight =
 700.0, 700.0, 610.0, 650.0, 575.0, 685.0, 620.0, 680.0, 700.0, 725.0, 720.0, 714.0, 850.0, 1000.0, 920.0, 955.0,
 925.0, 975.0, 950.0]
 
-이 두 가지는 도미의 특성이다.
+*산점도로 그리기
+import matplotlib.pyplot as pit 
+# matplotlib의 pyplot 함수를 pit로 줄여서 사용
+
+pit.scatter(bream_length, bream_weight)
+plt.xlabel('length') # x축은 길이
+pit.ylabel('weight') # y축은 무게
+plt.show()
+
+그래프를 그리는 방식 
+여기서 라벨은 그래프에서 x축 y축을 각각 화면에 명시해주는 역할을 한다.
+
+*빙어 데이터
+smelt_length = [ 9.8, 10.5, 10.6, 11.0, 11.2, 11.3, 11.8, 11.8, 12.0, 12.2,
+12.4, 13.0, 14.3, 15.0]
+
+smelt_weight [ 6.7, 7.5, 7.0, 9.7, 9.8, 8.7, 10.0, 9.9, 9.8, 12.2, 13.4,
+12.2, 19.7, 19.9]
+
+*얘도 산점도로 그려보기
+plt. scatter(bream_lengtfi, bream_weight)
+pit.scatter(smelt_length, smelt_weight)
+plt.xlabel('length’)
+plt.ylabel('weight')
+plt.show()
+
+---
+데이터 준비 완, 이제 머신러닝 프로그램 만들어보기
+k-최근접 이웃 알고리즘을 이용해서 두 가지 데이터를 구분하기
+-> 두 리스트를 더해서 하나의 리스트로 만들어주기 (두 데이터를 합치기 위해서)
+
+length = bream_length + smelt_length
+weight = bream_weight + smelt_weight
+
+
+아주 간단하게 두 리스트를 하나로 합쳤습니다. 이제 length와 weight 리스트:
+length = [25.4, 26.3. , 41.0, 9.8, , 15.0]
+weight = [242.0, 290.0, ... , 950.0, 6.7...... 19.9]
+
+이 리스트를 2차원 배열로 만들어줘야한다.
+왜? 사이킷런을 이용해야하는 이를 위해서는 사이킷런은 머신러닝 패키지이며 2차원 리스트가 필요함
+[[25.4, 242.0],
+[26.3, 290.0],
+[15.0, 19.9]]
+
+쉽게 만들려면 파이썬의 zip함수 이용하면 쉬움
+*zip함수
+나열된 리스트 각각에서 하나씩 원소를 꺼내 변환함
+
+fish_data = [[l, w] for I, w in zip(length, weight)]
+여기서 for문은 zip()한수로 길이와 무게 리스트에서 원소를 하나씩 꺼내어 l과 w에 할당한다.
+
+print(fish_data)
+하면 2차원 리스트가 나오겠지
+
+이제 정답 데이터를 준비해야 지금까지 준비한 데이터가 맞는지 틀린지 알 수 있지
+
+fish_target = [1] * 35 + [0] * 14
+print(fish_target)
+
+[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+*여기서 1과 0의 역할
+구분하는 대상 중 찾으려는 대상을 1, 그 외는 0으로 설정한다. 따라서 여기서는 도미를 1, 그 외는 0으로 설정한다.
+
+
+이제 사이킷런의 등장
+사이킷런 패키지에서 k-최근접 이웃 알고리즘을 구현한 클래스인 KNeighborsClassifier를
+임포트
+
+from sklearn.neighbors import KNeighborsClassifier
+파이썬에서 패키지나 모듈 전체를 임포트하지 않고 특정 클래스만 임포트하려면 from 〜 import 구문을 사용
+이렇게 하면 다음과 같이 클래스 이름을 길게 사용하지 않아도 된다.
+
+import sklearn
+model = sklearn.neighbors.KNeighborsClassifier()
+
+이 객체에 fish 데이터와 타겟을 전달하여 도미를 찾기 위한 기준을 제시한다.
+이런 과정을 훈련이라고 표현한다.
+
+사이킷런에서는 fit ( )메서드가 이런 역할을 함
+이 메서드에 fish_data와 fi아i_target 을 순서대로 전달한다
+kn.fit(fish_data, fish_target)
+
+*fin()
+주어진 데이로 알고리즘을 훈련시킨다.
+
+*score()
+사이킷런에서 모델을 평가하는 메서드
+이 메서드는 0에서 1 사이의 값을 반환
+1에 가까울 수록 정확히 맞혔다는 것(정확도 평가와 같은 것)
+
+kn.score(fish_data, fish_target)
+kn이 얼마나 잘 훈련되었는지 평가하는 코드
