@@ -108,3 +108,49 @@ kn.fit(fish_data, fish_target)
 
 kn.score(fish_data, fish_target)
 kn이 얼마나 잘 훈련되었는지 평가하는 코드
+
+import matplotlib.pyplot as pit # matplotlib의 pylot 함수를 pit로 줄여서 사용
+pit.scatter(bream_length, bream_weight)
+plt.xlabel('length') # x축은 길이
+pit.ylabel('weight') # y축은 무게
+plt.show()
+
+pit.scatter(bream_length, bream_weight)
+pit. scatter(smelt _ length, smelt _weight)
+pit.xlabelC length')
+pit.ylabel(’weight')
+plt.show()
+
+""첫 번째 머신러닝 프로그램""
+length = bream_ length + smelt .length
+weight = bream_weight + smelt _weight
+fish_data = [[I, w] for I, w in zip(length, weight)]
+print(fish_data)
+fi아!_target = [1] * 35 + [0] * 14
+print(fish_target)
+from sklearn.neighbors import KNeighborsClassifier
+kn = KNeighborsClassifier()
+kn.fit(fish_data, fish_target)
+kn.score(fish_data, fish_target)
+
+
+""k-최근접 이웃 알고리즘""
+pit.scatter(bream_length, bream_weight)
+plt.scatter(smelt_length, smelt_weight)
+pit.scatter(30600, marker='A，)
+plt.xlabel('length')
+pit.ylabel('weight')
+plt.show()
+
+kn.predict([[30, 600]])
+
+print(kn._fit_X)
+
+print(kn._y)
+
+kn49 = KNeighborsClassifier(n_neighbors=49)
+
+kn49.fit(fish_data, fish_target)
+kn49.score(fish_data, fish_target)
+
+print(35/49)
