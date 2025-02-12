@@ -1,0 +1,63 @@
+## 1. 결정 트리 (Decision Tree)
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.metrics import accuracy_score
+
+# 와인 데이터 불러오기
+from sklearn.datasets import load_wine
+
+data = load_wine()
+X = data.data
+y = data.target
+
+# 데이터 분할
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 결정 트리 모델 생성
+model = DecisionTreeClassifier(max_depth=3, random_state=42)
+model.fit(X_train, y_train)
+
+# 예측 및 정확도 평가
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Decision Tree Accuracy: {accuracy:.4f}')
+
+# 결정 트리 시각화
+plt.figure(figsize=(12, 8))
+plot_tree(model, filled=True, feature_names=data.feature_names, class_names=data.target_names)
+plt.show()
+
+## 2. 교차 검증과 그리드 서치
+
+from sklearn.model_selection import cross_val_score, GridSearchCV
+
+# 교차 검증 수행
+cv_scores = cross_val_score(model, X, y, cv=5)
+print(f'Cross Validation Scores: {cv_scores}')
+print(f'Average CV Accuracy: {cv_scores.mean():.4f}')
+
+# 그리드 서치로 최적 하이퍼파라미터 탐색
+param_grid = {'max_depth': [3, 5, 7, None], 'min_samples_split': [2, 5, 10]}
+gs = GridSearchCV(DecisionTreeClassifier(random_state=42), param_grid, cv=5)
+gs.fit(X_train, y_train)
+print(f'Best Parameters: {gs.best_params_}')
+
+## 3. 트리의 앙상블
+
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+
+# 랜덤 포레스트
+rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_model.fit(X_train, y_train)
+rf_accuracy = accuracy_score(y_test, rf_model.predict(X_test))
+print(f'Random Forest Accuracy: {rf_accuracy:.4f}')
+
+# 그레이디언트 부스팅
+gb_model = GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, random_state=42)
+gb_model.fit(X_train, y_train)
+gb_accuracy = accuracy_score(y_test, gb_model.predict(X_test))
+print(f'Gradient Boosting Accuracy: {gb_accuracy:.4f}')
