@@ -36,3 +36,22 @@ print(f'Test accuracy: {test_acc:.4f}')
 
 # 예측 수행
 predictions = model.predict(test_images)
+
+# CNN 모델 생성
+model = keras.Sequential([
+    keras.layers.Conv2D(32, (3,3), activation='relu', input_shape=(28,28,1)),
+    keras.layers.MaxPooling2D((2,2)),
+    keras.layers.Conv2D(64, (3,3), activation='relu'),
+    keras.layers.MaxPooling2D((2,2)),
+    keras.layers.Flatten(),
+    keras.layers.Dense(128, activation='relu'),
+    keras.layers.Dense(10, activation='softmax')
+])
+
+# 모델 컴파일
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+# 모델 학습
+model.fit(train_images, train_labels, epochs=10, validation_data=(test_images, test_labels))
