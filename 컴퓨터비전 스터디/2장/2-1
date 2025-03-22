@@ -56,3 +56,110 @@ HSV
 - 48비트: 고품질 색상 표현  
 
 비트 심도가 클수록 더 많은 색상을 표현할 수 있으며, 부드러운 그라디언트를 구현할 수 있다.
+
+텐서의 이미지 표현
+이미지 픽셀값은 배열로 표현됨
+텐서들의 원소 값들은 픽셀 강도에 해당
+
+그레이 스케일 이미지(2D 텐서)
+(높이, 너비) → (256, 256)
+
+RGB 컬러 이미지 (3D 텐서)
+(높이, 너비, 채널) → (256, 256, 3)
+
+이미지 배치 (4D 텐서)
+(배치 크기, 높이, 너비, 채널) → (100, 256, 256, 3)
+
+이미지 다운로드
+import tensorflow as tf
+url = "이미지 URL"
+image_path = tf.keras.utils.get_file('/content/image.jpg', origin=url)
+
+get_file() 함수는 웹에서 이미지를 다운로드하고 로컬 시스템에 저장
+
+image_path 변수에 다운로드된 이미지의 로컬 경로가 저장
+
+이미지 불러오기
+image = tf.io.read_file(image_path)
+
+이미지를 원시 바이너리 문자열로 저장
+image = tf.image.decode_jpeg(image, channels=3)
+
+RGB 채널을 포함한 3D 텐서로 변환
+
+shape=(높이, 너비, 채널), dtype=uint8
+
+이미지 시각화
+import matplotlib.pyplot as plt
+plt.imshow(image)
+plt.axis("off")
+plt.show()
+
+plt.imshow(image) : 이미지 출력
+
+plt.axis("off") : 좌표축 숨기기
+
+plt.show() : 화면에 표시
+
+다양한 색공간에서 작업하기
+tf.random.uniform (랜덤 RGB 이미지 생성)
+import tensorflow as tf
+import matplotlib.pyplot as plt
+rgb_image = tf.random.uniform([100, 100, 3], maxval=255, dtype=tf.float32)
+plt.imshow(rgb_image.numpy().astype("uint8"))
+plt.title("RGB Image")
+plt.axis("off")
+plt.show()
+
+100×100 픽셀, 3채널(RGB)의 랜덤 이미지 생성
+
+maxval=255 → 픽셀 값이 0~255 범위로 설정됨
+
+tf.image.rgb_to_grayscale (RGB → Grayscale 변환)
+grayscale_image = tf.image.rgb_to_grayscale(rgb_image)
+plt.imshow(grayscale_image.numpy().squeeze(), cmap="gray")
+plt.title("Grayscale Image")
+plt.axis("off")
+plt.show()
+
+Grayscale 변환 공식
+Grayscale = R × 0.299 + G × 0.587 + B × 0.114
+
+tf.image.rgb_to_hsv (RGB → HSV 변환)
+hsv_image = tf.image.rgb_to_hsv(rgb_image)
+hue_channel = hsv_image[:, :, 0]
+plt.imshow(hue_channel, cmap="hsv")
+plt.title("Hue Channel of HSV Image")
+plt.axis("off")
+plt.colorbar(label="Hue Value")
+plt.show()
+
+Hue(색조) : 색상의 유형 (빨강, 파랑, 녹색 등)
+
+Saturation(채도) : 색상의 선명도
+
+Value(명도) : 색상의 밝기
+
+픽셀 값의 정규화와 표준화
+정규화
+normalized_image = rgb_image / 255.0
+print("원본 픽셀 값:", rgb_image[0, 0])
+print("정규화된 픽셀 값:", normalized_image[0, 0])
+
+모든 픽셀 값을 동일한 범위(0~1)로 맞춰 학습 안정성 향상
+
+연산 속도 개선 및 모델 훈련 속도 증가
+
+표준화
+mean = tf.reduce_mean(rgb_image)
+stddev = tf.math.reduce_std(rgb_image)
+standardized_image = (rgb_image - mean) / stddev
+print("원본 픽셀 값:", rgb_image[0, 0])
+print("표준화된 픽셀 값:", standardized_image[0, 0])
+
+데이터 분포를 고려하여 값의 균형을 맞춤
+
+훈련 데이터 간 일관성 증가 → 모델이 더 빠르게 수렴
+
+딥러닝에서 배치 정규화와 함께 사용 시 효과적
+
